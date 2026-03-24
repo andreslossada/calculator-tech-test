@@ -27,9 +27,7 @@ describe('useOperandInputController', () => {
         const hook = renderHook(() =>
             useOperandInputController({
                 setForm: setFormMock,
-                setError: (value: string) => {
-                    setErrorMock(value)
-                },
+                setError: setErrorMock as unknown as (value: string) => void,
                 viewMode,
                 firstNumberRef,
                 secondNumberRef,

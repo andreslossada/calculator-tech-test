@@ -111,7 +111,7 @@ describe('App', () => {
             expect(screen.getByText('16')).toBeInTheDocument()
         })
 
-        await userEvent.click(screen.getByRole('heading', { name: 'Result' }))
+        await userEvent.click(screen.getByLabelText('Second number'))
         await userEvent.keyboard('{Escape}')
 
         expect(screen.getByLabelText('First number')).toHaveValue(null)

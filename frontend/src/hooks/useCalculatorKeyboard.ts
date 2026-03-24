@@ -99,10 +99,13 @@ export const useCalculatorKeyboard = ({
         return;
       }
 
-      if (
-        (event.key === "Escape" || event.key.toLowerCase() === "c") &&
-        !isEditable
-      ) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onReset();
+        return;
+      }
+
+      if (event.key.toLowerCase() === "c" && !isEditable) {
         event.preventDefault();
         onReset();
       }
