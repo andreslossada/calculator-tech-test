@@ -230,5 +230,5 @@ Prompts used during implementation:
 ## Known Limitations
 
 - Floating-point arithmetic can produce precision artifacts for some decimal values.
-- Optional advanced operations were not included in MVP by design.
+- Beyond the implemented optional operations (`exponent`, `sqrt`, `percentage`), no additional advanced operations are included.
 - Docker setup is provided for local full-stack execution but was kept intentionally simple for interview scope.
