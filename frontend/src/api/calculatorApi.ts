@@ -1,4 +1,11 @@
-export type CalculatorOperation = "add" | "subtract" | "multiply" | "divide";
+export type CalculatorOperation =
+  | "add"
+  | "subtract"
+  | "multiply"
+  | "divide"
+  | "exponent"
+  | "sqrt"
+  | "percentage";
 
 export type CalculateRequest = {
   operation: CalculatorOperation;

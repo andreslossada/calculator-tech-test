@@ -70,6 +70,11 @@ func calculateHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		if errors.Is(err, calculator.ErrNegativeSqrt) {
+			writeError(w, http.StatusBadRequest, "NEGATIVE_SQRT", "Square root of a negative number is not allowed.")
+			return
+		}
+
 		writeError(w, http.StatusBadRequest, "INVALID_OPERATION", "Operation is not supported.")
 		return
 	}

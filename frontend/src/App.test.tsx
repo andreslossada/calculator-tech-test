@@ -12,7 +12,7 @@ describe('App', () => {
 
         await userEvent.click(screen.getByRole('button', { name: 'Calculate' }))
 
-        expect(screen.getByRole('alert')).toHaveTextContent('Both numbers are required.')
+        expect(screen.getByRole('alert')).toHaveTextContent('First number is required.')
     })
 
     it('submits values and renders result from API', async () => {
@@ -213,6 +213,57 @@ describe('App', () => {
         await waitFor(() => {
             expect(screen.getByText('12,345.67', { selector: '.result-value' })).toBeInTheDocument()
             expect(screen.getByText('12,000.67 + 345 = 12,345.67')).toBeInTheDocument()
+        })
+    })
+
+    it('calculates square root with first operand only', async () => {
+        const fetchSpy = vi.spyOn(window, 'fetch').mockResolvedValue({
+            ok: true,
+            json: async () => ({ result: 3 }),
+        } as Response)
+
+        render(<App />)
+
+        await userEvent.type(screen.getByLabelText('First number'), '9')
+        await userEvent.click(screen.getByRole('button', { name: 'Square Root (R)' }))
+        await userEvent.click(screen.getByRole('button', { name: 'Calculate' }))
+
+        await waitFor(() => {
+            expect(fetchSpy).toHaveBeenCalledWith(
+                expect.stringContaining('/api/v1/calculate'),
+                expect.objectContaining({
+                    method: 'POST',
+                    body: JSON.stringify({ operation: 'sqrt', a: 9, b: 0 }),
+                }),
+            )
+            expect(screen.getByText('3', { selector: '.result-value' })).toBeInTheDocument()
+            expect(screen.getByText('sqrt(9) = 3')).toBeInTheDocument()
+        })
+    })
+
+    it('calculates exponentiation in calculator mode', async () => {
+        const fetchSpy = vi.spyOn(window, 'fetch').mockResolvedValue({
+            ok: true,
+            json: async () => ({ result: 8 }),
+        } as Response)
+
+        render(<App />)
+
+        await userEvent.click(screen.getByRole('button', { name: 'Calculator mode' }))
+        await userEvent.click(screen.getByRole('button', { name: '2' }))
+        await userEvent.click(screen.getByRole('button', { name: '^' }))
+        await userEvent.click(screen.getByRole('button', { name: '3' }))
+        await userEvent.click(screen.getByRole('button', { name: '=' }))
+
+        await waitFor(() => {
+            expect(fetchSpy).toHaveBeenCalledWith(
+                expect.stringContaining('/api/v1/calculate'),
+                expect.objectContaining({
+                    method: 'POST',
+                    body: JSON.stringify({ operation: 'exponent', a: 2, b: 3 }),
+                }),
+            )
+            expect(screen.getByText('8', { selector: '.result-value' })).toBeInTheDocument()
         })
     })
 

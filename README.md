@@ -18,6 +18,7 @@ Interview assignment solution with a React frontend and Go backend.
 ## Features
 
 - Required operations: add, subtract, multiply, divide
+- Optional operations implemented: exponent, sqrt, percentage
 - Input validation + error handling in both frontend and backend
 - JSON API with stable success/error contract
 - Basic responsive UI
@@ -133,6 +134,9 @@ Supported operations:
 - `subtract`
 - `multiply`
 - `divide`
+- `exponent`
+- `sqrt`
+- `percentage`
 
 Success (200):
 
@@ -167,6 +171,24 @@ curl -X POST http://localhost:8080/api/v1/calculate \
   -d '{"operation":"divide","a":10,"b":0}'
 ```
 
+```bash
+curl -X POST http://localhost:8080/api/v1/calculate \
+  -H "Content-Type: application/json" \
+  -d '{"operation":"exponent","a":2,"b":3}'
+```
+
+```bash
+curl -X POST http://localhost:8080/api/v1/calculate \
+  -H "Content-Type: application/json" \
+  -d '{"operation":"sqrt","a":9}'
+```
+
+```bash
+curl -X POST http://localhost:8080/api/v1/calculate \
+  -H "Content-Type: application/json" \
+  -d '{"operation":"percentage","a":50,"b":10}'
+```
+
 ## Design Decisions And Assumptions
 
 - Single endpoint (`POST /api/v1/calculate`) to keep integration simple and extensible.
@@ -175,7 +197,7 @@ curl -X POST http://localhost:8080/api/v1/calculate \
   - `internal/calculator`: pure business logic
 - Error contract uses stable `code` + `message` for predictable frontend behavior.
 - Numeric type: `float64` / `number` for assignment scope.
-- Optional operations (power, sqrt, percentage) intentionally deferred.
+- Optional operations are implemented on top of the same endpoint contract.
 
 ## Web Deployment
 

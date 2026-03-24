@@ -28,6 +28,8 @@ export const InputModeForm = ({
     onSubmit,
     onReset,
 }: InputModeFormProps) => {
+    const isUnaryOperation = form.operation === 'sqrt'
+
     return (
         <form className="calculator-form" onSubmit={onSubmit}>
             <label htmlFor="first-number">First number</label>
@@ -86,7 +88,8 @@ export const InputModeForm = ({
                 onChange={(event) => onUpdateField('b', event.target.value)}
                 onFocus={() => onSetActiveField('b')}
                 inputMode="decimal"
-                placeholder="e.g. 6"
+                placeholder={isUnaryOperation ? 'Not required for sqrt' : 'e.g. 6'}
+                disabled={isUnaryOperation}
             />
 
             <div className="button-row">
@@ -98,7 +101,7 @@ export const InputModeForm = ({
                 </button>
             </div>
             <p className="keyboard-help keyboard-help-subtle" aria-label="Keyboard shortcuts available">
-                Shortcuts: <kbd>0-9</kbd> <kbd>+ - * /</kbd> <kbd>Enter</kbd> calculate <kbd>Esc</kbd> reset.
+                Shortcuts: <kbd>0-9</kbd> <kbd>+ - * / ^ % R</kbd> <kbd>Enter</kbd> calculate <kbd>Esc</kbd> reset.
             </p>
         </form>
     )

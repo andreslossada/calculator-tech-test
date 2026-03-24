@@ -95,60 +95,88 @@ export const useAppCalculatorController = (): UseAppCalculatorControllerResult =
     }, [form.operation, lastCalculation?.operation])
 
     const resultSummary = useMemo<ResultSummary | null>(() => {
-        if (!lastCalculation || error) {
-            return null
-        }
+      if (!lastCalculation || error) {
+        return null;
+      }
 
-        const expression = `${formatNumberValue(lastCalculation.a)} ${activeOperationMeta.symbol} ${formatNumberValue(lastCalculation.b)} = ${formatNumberValue(lastCalculation.result)}`
+      const expression =
+        lastCalculation.operation === "sqrt"
+          ? `${activeOperationMeta.symbol}(${formatNumberValue(lastCalculation.a)}) = ${formatNumberValue(lastCalculation.result)}`
+          : `${formatNumberValue(lastCalculation.a)} ${activeOperationMeta.symbol} ${formatNumberValue(lastCalculation.b)} = ${formatNumberValue(lastCalculation.result)}`;
 
-        return {
-            expression,
-            value: formatNumberValue(lastCalculation.result),
-        }
-    }, [activeOperationMeta.symbol, error, lastCalculation])
+      return {
+        expression,
+        value: formatNumberValue(lastCalculation.result),
+      };
+    }, [activeOperationMeta.symbol, error, lastCalculation]);
 
     const updateOperation = (operation: Operation) => {
-        setForm((prev) => ({ ...prev, operation }))
-        setActiveField('b')
+      setForm((prev) => ({
+        ...prev,
+        operation,
+        b: operation === "sqrt" ? "" : prev.b,
+      }));
 
-        if (viewMode === 'input') {
-            focusSecondInputField()
+      if (operation === "sqrt") {
+        setActiveField("a");
+        if (viewMode === "input") {
+          firstNumberRef.current?.focus();
         }
+      } else {
+        setActiveField("b");
+        if (viewMode === "input") {
+          focusSecondInputField();
+        }
+      }
 
-        if (lastCalculation !== null && !isLoading) {
-            void submitCalculation(operation)
-        }
-    }
+      if (lastCalculation !== null && !isLoading) {
+        void submitCalculation(operation);
+      }
+    };
 
     const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        await submitCalculation()
-    }
+      event.preventDefault();
+      await submitCalculation();
+    };
 
     const onReset = () => {
-        resetCalculationState()
-        resetToFirstField()
-    }
+      resetCalculationState();
+      resetToFirstField();
+    };
 
     useCalculatorKeyboard({
-        onOperationChange: updateOperation,
-        onCalculate: () => {
-            if (!isLoading) {
-                void submitCalculation()
-            }
-        },
-        onReset: () => {
-            if (!isLoading) {
-                onReset()
-            }
-        },
-        onDigitInput: (digit) => appendDigitToActiveField(digit),
-        onDecimalInput: () => appendDecimalToActiveField(),
-        onBackspaceInput: () => backspaceActiveField(),
-        onFocusNextField: focusNextCalculatorField,
-        onFocusPreviousField: focusPreviousCalculatorField,
-        isDisabled: isLoading,
-    })
+      onOperationChange: updateOperation,
+      onCalculate: () => {
+        if (!isLoading) {
+          void submitCalculation();
+        }
+      },
+      onReset: () => {
+        if (!isLoading) {
+          onReset();
+        }
+      },
+      onDigitInput: (digit) => appendDigitToActiveField(digit),
+      onDecimalInput: () => appendDecimalToActiveField(),
+      onBackspaceInput: () => backspaceActiveField(),
+      onFocusNextField: () => {
+        if (form.operation === "sqrt") {
+          setActiveField("a");
+          return;
+        }
+
+        focusNextCalculatorField();
+      },
+      onFocusPreviousField: () => {
+        if (form.operation === "sqrt") {
+          setActiveField("a");
+          return;
+        }
+
+        focusPreviousCalculatorField();
+      },
+      isDisabled: isLoading,
+    });
 
     return {
         viewMode,

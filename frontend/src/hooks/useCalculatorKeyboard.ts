@@ -18,6 +18,10 @@ const OPERATION_KEYS: Record<string, Operation> = {
   "-": "subtract",
   "*": "multiply",
   "/": "divide",
+  "^": "exponent",
+  "%": "percentage",
+  r: "sqrt",
+  R: "sqrt",
 };
 
 const isEditableElement = (target: EventTarget | null): boolean => {

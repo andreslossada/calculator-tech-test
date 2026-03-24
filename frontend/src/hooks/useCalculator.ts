@@ -7,122 +7,157 @@ type UseCalculatorParams = {
     onSuccessfulCalculation?: () => void
 }
 
+const isUnaryOperation = (operation: Operation) => operation === "sqrt";
+
 const validateForm = (form: FormState): string | null => {
-    if (form.a.trim() === '' || form.b.trim() === '') {
-        return 'Both numbers are required.'
+  if (form.a.trim() === "") {
+    return "First number is required.";
+  }
+
+  if (!isUnaryOperation(form.operation) && form.b.trim() === "") {
+    return "Both numbers are required.";
+  }
+
+  const parsedA = Number(form.a);
+
+  if (!Number.isFinite(parsedA)) {
+    return "Please enter valid numeric values.";
+  }
+
+  if (!isUnaryOperation(form.operation)) {
+    const parsedB = Number(form.b);
+    if (!Number.isFinite(parsedB)) {
+      return "Please enter valid numeric values.";
+    }
+  }
+
+  return null;
+};
+
+export const useCalculator = ({
+  onSuccessfulCalculation,
+}: UseCalculatorParams = {}) => {
+  const [form, setForm] = useState<FormState>(INITIAL_FORM);
+  const [lastCalculation, setLastCalculation] =
+    useState<CalculationSnapshot | null>(null);
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [resultAnimationKey, setResultAnimationKey] = useState(0);
+  const autoRecalculateTimeoutRef = useRef<ReturnType<
+    typeof window.setTimeout
+  > | null>(null);
+
+  const clearPendingRecalculation = useCallback(() => {
+    if (autoRecalculateTimeoutRef.current !== null) {
+      window.clearTimeout(autoRecalculateTimeoutRef.current);
+      autoRecalculateTimeoutRef.current = null;
+    }
+  }, []);
+
+  const submitCalculation = useCallback(
+    async (operationOverride?: Operation) => {
+      clearPendingRecalculation();
+
+      const operationToUse = operationOverride ?? form.operation;
+      const validationError = validateForm(form);
+      if (validationError) {
+        setError(validationError);
+        setLastCalculation(null);
+        return;
+      }
+
+      setError("");
+      setIsLoading(true);
+
+      const parsedA = Number(form.a);
+      const parsedB = isUnaryOperation(operationToUse) ? 0 : Number(form.b);
+
+      try {
+        const response = await calculate({
+          operation: operationToUse,
+          a: parsedA,
+          b: parsedB,
+        });
+
+        setLastCalculation({
+          a: parsedA,
+          b: parsedB,
+          operation: operationToUse,
+          result: response.result,
+        });
+        setResultAnimationKey((prev) => prev + 1);
+        onSuccessfulCalculation?.();
+      } catch (requestError) {
+        const message =
+          requestError instanceof Error
+            ? requestError.message
+            : "Unexpected error";
+        setError(message);
+        setLastCalculation(null);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [clearPendingRecalculation, form, onSuccessfulCalculation],
+  );
+
+  const resetCalculationState = () => {
+    clearPendingRecalculation();
+    setForm(INITIAL_FORM);
+    setLastCalculation(null);
+    setError("");
+  };
+
+  useEffect(() => {
+    if (!lastCalculation || isLoading) {
+      return;
     }
 
-    const parsedA = Number(form.a)
-    const parsedB = Number(form.b)
-
-    if (!Number.isFinite(parsedA) || !Number.isFinite(parsedB)) {
-        return 'Please enter valid numeric values.'
+    const parsedA = Number(form.a);
+    if (!Number.isFinite(parsedA)) {
+      return;
     }
 
-    return null
-}
-
-export const useCalculator = ({ onSuccessfulCalculation }: UseCalculatorParams = {}) => {
-    const [form, setForm] = useState<FormState>(INITIAL_FORM)
-    const [lastCalculation, setLastCalculation] = useState<CalculationSnapshot | null>(null)
-    const [error, setError] = useState('')
-    const [isLoading, setIsLoading] = useState(false)
-    const [resultAnimationKey, setResultAnimationKey] = useState(0)
-    const autoRecalculateTimeoutRef = useRef<ReturnType<typeof window.setTimeout> | null>(null)
-
-    const clearPendingRecalculation = useCallback(() => {
-        if (autoRecalculateTimeoutRef.current !== null) {
-            window.clearTimeout(autoRecalculateTimeoutRef.current)
-            autoRecalculateTimeoutRef.current = null
-        }
-    }, [])
-
-    const submitCalculation = useCallback(async (operationOverride?: Operation) => {
-        clearPendingRecalculation()
-
-        const operationToUse = operationOverride ?? form.operation
-        const validationError = validateForm(form)
-        if (validationError) {
-            setError(validationError)
-            setLastCalculation(null)
-            return
-        }
-
-        setError('')
-        setIsLoading(true)
-
-        const parsedA = Number(form.a)
-        const parsedB = Number(form.b)
-
-        try {
-            const response = await calculate({
-                operation: operationToUse,
-                a: parsedA,
-                b: parsedB,
-            })
-
-            setLastCalculation({
-                a: parsedA,
-                b: parsedB,
-                operation: operationToUse,
-                result: response.result,
-            })
-            setResultAnimationKey((prev) => prev + 1)
-            onSuccessfulCalculation?.()
-        } catch (requestError) {
-            const message = requestError instanceof Error ? requestError.message : 'Unexpected error'
-            setError(message)
-            setLastCalculation(null)
-        } finally {
-            setIsLoading(false)
-        }
-    }, [clearPendingRecalculation, form, onSuccessfulCalculation])
-
-    const resetCalculationState = () => {
-        clearPendingRecalculation()
-        setForm(INITIAL_FORM)
-        setLastCalculation(null)
-        setError('')
+    const parsedB = Number(form.b);
+    if (!isUnaryOperation(form.operation) && !Number.isFinite(parsedB)) {
+      return;
     }
 
-    useEffect(() => {
-        if (!lastCalculation || isLoading) {
-            return
-        }
+    const hasChangedSinceLastResult =
+      parsedA !== lastCalculation.a ||
+      (!isUnaryOperation(form.operation) && parsedB !== lastCalculation.b) ||
+      form.operation !== lastCalculation.operation;
 
-        const parsedA = Number(form.a)
-        const parsedB = Number(form.b)
-        if (!Number.isFinite(parsedA) || !Number.isFinite(parsedB)) {
-            return
-        }
-
-        const hasChangedSinceLastResult =
-            parsedA !== lastCalculation.a ||
-            parsedB !== lastCalculation.b ||
-            form.operation !== lastCalculation.operation
-
-        if (!hasChangedSinceLastResult) {
-            return
-        }
-
-        autoRecalculateTimeoutRef.current = window.setTimeout(() => {
-            void submitCalculation()
-        }, AUTO_RECALCULATE_DELAY_MS)
-
-        return clearPendingRecalculation
-    }, [clearPendingRecalculation, form.a, form.b, form.operation, isLoading, lastCalculation, submitCalculation])
-
-    useEffect(() => clearPendingRecalculation, [clearPendingRecalculation])
-
-    return {
-        form,
-        setForm,
-        lastCalculation,
-        error,
-        setError,
-        isLoading,
-        resultAnimationKey,
-        submitCalculation,
-        resetCalculationState,
+    if (!hasChangedSinceLastResult) {
+      return;
     }
-}
+
+    autoRecalculateTimeoutRef.current = window.setTimeout(() => {
+      void submitCalculation();
+    }, AUTO_RECALCULATE_DELAY_MS);
+
+    return clearPendingRecalculation;
+  }, [
+    clearPendingRecalculation,
+    form.a,
+    form.b,
+    form.operation,
+    isLoading,
+    lastCalculation,
+    submitCalculation,
+  ]);
+
+  useEffect(() => clearPendingRecalculation, [clearPendingRecalculation]);
+
+  return {
+    form,
+    setForm,
+    lastCalculation,
+    error,
+    setError,
+    isLoading,
+    resultAnimationKey,
+    submitCalculation,
+    resetCalculationState,
+  };
+};

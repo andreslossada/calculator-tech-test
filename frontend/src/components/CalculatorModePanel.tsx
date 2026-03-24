@@ -31,6 +31,8 @@ export const CalculatorModePanel = ({
     onReset,
     onCalculate,
 }: CalculatorModePanelProps) => {
+    const isUnaryOperation = form.operation === 'sqrt'
+
     return (
         <section className="calculator-shell" aria-label="Calculator keypad mode">
             <div className="calculator-display" aria-live="polite">
@@ -46,9 +48,10 @@ export const CalculatorModePanel = ({
                     type="button"
                     className={`display-line${activeField === 'b' ? ' active' : ''}`}
                     onClick={() => onSetActiveField('b')}
+                    disabled={isUnaryOperation}
                 >
                     <span className="display-label">B</span>
-                    <span className="display-value">{form.b || '0'}</span>
+                    <span className="display-value">{isUnaryOperation ? '--' : form.b || '0'}</span>
                 </button>
                 <p className="display-operation">{operationLabel}</p>
             </div>
@@ -105,7 +108,7 @@ export const CalculatorModePanel = ({
             </div>
 
             <p className="keyboard-help keyboard-help-subtle" aria-label="Keyboard shortcuts available">
-                Shortcuts: <kbd>0-9</kbd> <kbd>+ - * /</kbd> <kbd>Enter</kbd> calculate <kbd>Esc</kbd> reset.
+                Shortcuts: <kbd>0-9</kbd> <kbd>+ - * / ^ % R</kbd> <kbd>Enter</kbd> calculate <kbd>Esc</kbd> reset.
             </p>
         </section>
     )
