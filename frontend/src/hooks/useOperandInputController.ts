@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Dispatch, RefObject, SetStateAction } from 'react'
 import type { FormState } from '../calculator/types'
+import type { OperandField } from '../view/models'
 import type { ViewMode } from '../view/types'
 
 type UseOperandInputControllerParams = {
@@ -18,9 +19,9 @@ export const useOperandInputController = ({
     firstNumberRef,
     secondNumberRef,
 }: UseOperandInputControllerParams) => {
-    const [activeField, setActiveField] = useState<'a' | 'b'>('a')
+    const [activeField, setActiveField] = useState<OperandField>('a')
 
-    const focusField = (field: 'a' | 'b') => {
+    const focusField = (field: OperandField) => {
         if (field === 'a') {
             firstNumberRef.current?.focus()
             return
@@ -42,7 +43,7 @@ export const useOperandInputController = ({
         }
     }
 
-    const updateField = (field: 'a' | 'b', value: string) => {
+    const updateField = (field: OperandField, value: string) => {
         setForm((prev) => ({ ...prev, [field]: value }))
         setActiveField(field)
     }

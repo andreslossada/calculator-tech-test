@@ -1,14 +1,15 @@
 import type { FormEvent, RefObject } from 'react'
 import { OPERATION_OPTIONS } from '../calculator/constants'
 import type { FormState, Operation } from '../calculator/types'
+import type { OperandField } from '../view/models'
 
 type InputModeFormProps = {
     form: FormState
     isLoading: boolean
     firstNumberRef: RefObject<HTMLInputElement | null>
     secondNumberRef: RefObject<HTMLInputElement | null>
-    onUpdateField: (field: 'a' | 'b', value: string) => void
-    onSetActiveField: (field: 'a' | 'b') => void
+    onUpdateField: (field: OperandField, value: string) => void
+    onSetActiveField: (field: OperandField) => void
     onMoveFocusToSecondField: () => void
     onUpdateOperation: (operation: Operation) => void
     onSubmit: (event: FormEvent<HTMLFormElement>) => void

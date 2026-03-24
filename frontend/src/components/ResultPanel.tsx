@@ -1,10 +1,6 @@
 import type { CalculationSnapshot } from '../calculator/types'
+import type { ResultSummary } from '../view/models'
 import type { ViewMode } from '../view/types'
-
-type ResultSummary = {
-    expression: string
-    value: string
-}
 
 type ResultPanelProps = {
     error: string

@@ -1,14 +1,15 @@
 import { OPERATION_OPTIONS } from '../calculator/constants'
 import type { FormState, Operation } from '../calculator/types'
+import type { OperandField } from '../view/models'
 
 const KEYPAD_BUTTONS = ['7', '8', '9', '4', '5', '6', '1', '2', '3', '.', '0', 'backspace'] as const
 
 type CalculatorModePanelProps = {
     form: FormState
-    activeField: 'a' | 'b'
+    activeField: OperandField
     operationLabel: string
     isLoading: boolean
-    onSetActiveField: (field: 'a' | 'b') => void
+    onSetActiveField: (field: OperandField) => void
     onUpdateOperation: (operation: Operation) => void
     onAppendDigit: (digit: string) => void
     onAppendDecimal: () => void
