@@ -17,7 +17,7 @@ export const OPERATION_OPTIONS: Array<{
   { value: "multiply", label: "Multiplication", symbol: "x", shortcut: "*" },
   { value: "divide", label: "Division", symbol: "/", shortcut: "/" },
   { value: "exponent", label: "Exponentiation", symbol: "^", shortcut: "^" },
-  { value: "sqrt", label: "Square Root", symbol: "sqrt", shortcut: "R" },
+  { value: "sqrt", label: "Square Root", symbol: "√", shortcut: "R" },
   { value: "percentage", label: "Percentage", symbol: "%", shortcut: "%" },
 ];
 
