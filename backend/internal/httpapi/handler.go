@@ -18,6 +18,27 @@ type calculateRequest struct {
 	B         float64 `json:"b"`
 }
 
+func normalizeOperation(operation string) string {
+	switch strings.ToLower(strings.TrimSpace(operation)) {
+	case "+", "add", "addition":
+		return string(calculator.OperationAdd)
+	case "-", "subtract", "subtraction":
+		return string(calculator.OperationSubtract)
+	case "*", "x", "multiply", "multiplication":
+		return string(calculator.OperationMultiply)
+	case "/", "divide", "division":
+		return string(calculator.OperationDivide)
+	case "^", "pow", "power", "exponent", "exponentiation":
+		return string(calculator.OperationExponent)
+	case "sqrt", "square_root", "square root", "√":
+		return string(calculator.OperationSqrt)
+	case "%", "percent", "percentage":
+		return string(calculator.OperationPercent)
+	default:
+		return strings.ToLower(strings.TrimSpace(operation))
+	}
+}
+
 type calculateResponse struct {
 	Result float64 `json:"result"`
 }
@@ -62,6 +83,8 @@ func calculateHandler(w http.ResponseWriter, r *http.Request) {
 		writeError(w, status, code, err.Error())
 		return
 	}
+
+	payload.Operation = normalizeOperation(payload.Operation)
 
 	result, err := calculator.Compute(calculator.Operation(payload.Operation), payload.A, payload.B)
 	if err != nil {

@@ -94,6 +94,44 @@ func TestCalculateHandler_OptionalOperationsSuccess(t *testing.T) {
 	}
 }
 
+func TestCalculateHandler_OperationAliases(t *testing.T) {
+	mux := http.NewServeMux()
+	RegisterRoutes(mux)
+
+	tests := []struct {
+		name       string
+		body       string
+		wantResult float64
+	}{
+		{name: "sqrt symbol alias", body: `{"operation":"√","a":9}`, wantResult: 3},
+		{name: "percentage symbol alias", body: `{"operation":"%","a":50,"b":10}`, wantResult: 5},
+		{name: "trim and mixed-case alias", body: `{"operation":"  PoWeR  ","a":2,"b":3}`, wantResult: 8},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := httptest.NewRequest(http.MethodPost, "/api/v1/calculate", bytes.NewReader([]byte(tt.body)))
+			req.Header.Set("Content-Type", "application/json")
+			res := httptest.NewRecorder()
+
+			mux.ServeHTTP(res, req)
+
+			if res.Code != http.StatusOK {
+				t.Fatalf("expected status 200, got %d", res.Code)
+			}
+
+			var payload map[string]float64
+			if err := json.Unmarshal(res.Body.Bytes(), &payload); err != nil {
+				t.Fatalf("failed parsing response: %v", err)
+			}
+
+			if payload["result"] != tt.wantResult {
+				t.Fatalf("expected result %v, got %v", tt.wantResult, payload["result"])
+			}
+		})
+	}
+}
+
 func TestCalculateHandler_NegativeSqrt(t *testing.T) {
 	mux := http.NewServeMux()
 	RegisterRoutes(mux)
