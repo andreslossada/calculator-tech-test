@@ -16,3 +16,8 @@ Thumbs.db
 # Workspace root deps
 node_modules
 skills-lock.json
+
+# Environment files (keep templates)
+**/.env
+**/.env.*
+!**/.env.example
