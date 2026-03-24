@@ -68,7 +68,7 @@ const getInitialTheme = (): ThemeMode => {
 
 function App() {
     const [form, setForm] = useState<FormState>(INITIAL_FORM)
-    const [result, setResult] = useState<number | null>(null)
+    const [, setResult] = useState<number | null>(null)
     const [lastCalculation, setLastCalculation] = useState<CalculationSnapshot | null>(null)
     const [error, setError] = useState('')
     const [isLoading, setIsLoading] = useState(false)

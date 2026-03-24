@@ -252,7 +252,47 @@ Stop containers:
 docker compose down
 ```
 
-## 9. API Usage Examples
+## 9. Deploy To The Web (Render + Vercel)
+
+Recommended setup for this project:
+
+- Backend (Go API): Render
+- Frontend (React): Vercel
+
+### 1) Deploy backend to Render
+
+This repository includes `render.yaml` and `backend/Dockerfile`.
+
+In Render:
+
+- Create a new Blueprint service from this repository.
+- Render will pick `render.yaml` and create `calculator-backend`.
+- After deploy, copy your backend URL, for example:
+  - `https://calculator-backend.onrender.com`
+
+Quick check:
+
+- `https://<your-backend-domain>/health` should return `{"status":"ok"}`.
+
+### 2) Connect frontend in Vercel
+
+In Vercel project settings for `frontend`, set:
+
+- `VITE_API_BASE_URL=https://<your-backend-domain>`
+
+Redeploy frontend after updating this variable.
+
+### 3) CORS configuration
+
+Backend uses `ALLOWED_ORIGIN` and supports comma-separated origins, for example:
+
+```text
+http://localhost:5173,https://frontend-sand-eight-62.vercel.app
+```
+
+This allows local development and production frontend at the same time.
+
+## 10. API Usage Examples
 
 ### cURL examples
 
@@ -268,7 +308,7 @@ curl -X POST http://localhost:8080/api/v1/calculate \
   -d '{"operation":"divide","a":10,"b":0}'
 ```
 
-## 10. Quick Verification Checklist
+## 11. Quick Verification Checklist
 
 Run these checks before sharing the repository link:
 
@@ -299,7 +339,7 @@ npm run test:coverage
 - Validate division by zero returns a readable error.
 - Validate mobile-width layout at roughly 560px.
 
-## 11. Design Decisions and Assumptions
+## 12. Design Decisions and Assumptions
 
 - Single calculate endpoint (`POST /api/v1/calculate`) was chosen to keep frontend integration simple and make future operations easy to add.
 - Backend separates HTTP handling and math logic:
@@ -309,13 +349,13 @@ npm run test:coverage
 - Number type is `float64`/`number` for simplicity in assignment scope.
 - Optional operations (exponentiation, square root, percentage) intentionally deferred until required scope is complete.
 
-## 12. Trade-offs
+## 13. Trade-offs
 
 - Kept a single endpoint for clarity and lower integration complexity, instead of multiple operation-specific routes.
 - Focused test scope on business and handler behavior rather than full browser E2E automation.
 - Prioritized required operations and robust validation over optional advanced operations.
 
-## 13. AI Prompts Used
+## 14. AI Prompts Used
 
 Prompts used during implementation:
 
@@ -325,7 +365,7 @@ Prompts used during implementation:
 4. "Implement Go backend endpoint with clean validation, JSON error contract, and table-driven unit tests."
 5. "Generate README with setup, run instructions, API examples, and design rationale."
 
-## 14. Known Limitations
+## 15. Known Limitations
 
 - Floating-point arithmetic can produce precision artifacts for some decimal values.
 - Optional advanced operations were not included in MVP by design.
