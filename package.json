@@ -1,0 +1,13 @@
+{
+  "name": "calculator-tech-test",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "concurrently -n frontend,backend -c cyan,green \"npm --prefix frontend run dev\" \"cd backend && go run ./cmd/server\"",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "cd backend && go run ./cmd/server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
