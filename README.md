@@ -151,11 +151,16 @@ Optional Docker setup is included with:
 
 Prompts used during implementation:
 
-1. "Create a senior-level implementation plan to maximize technical interview score for this React + Go calculator assignment."
-2. "Start implementation. Build required files first and postpone extra features."
-3. "Implement a maintainable React + TypeScript frontend with validation, API client, responsive UI, and unit tests."
-4. "Implement Go backend endpoint with clean validation, JSON error contract, and table-driven unit tests."
-5. "Generate README with setup, run instructions, API examples, and design rationale."
+1. "Necesito un plan rapido para hacer este challenge React + Go sin perder tiempo en extras."
+2. "Arranquemos por lo obligatorio: suma, resta, multiplicacion y division, despues vemos bonus."
+3. "Arma el endpoint POST /api/v1/calculate con validaciones decentes y errores claros en JSON."
+4. "Separa bien handler y logica de negocio para que el backend no quede mezclado."
+5. "Escribe tests table-driven en Go para operaciones normales y casos borde, sobre todo division por cero."
+6. "En frontend, crea una UI simple pero prolija, con validacion antes de pegarle al backend."
+7. "Haz un cliente API tipado en TS para no meter fetch directo en los componentes."
+8. "Agrega estados de loading/success/error y bloquea doble submit mientras responde la API."
+9. "Cubre los flujos clave con Vitest + Testing Library: exito, validaciones y error de backend."
+10. "Ayudame a dejar el README listo para entrevista: setup, tests, ejemplos de API y decisiones tecnicas."
 
 ## Known Limitations
 
