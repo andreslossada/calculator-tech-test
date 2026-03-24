@@ -1,6 +1,5 @@
 import { useEffect } from "react";
-
-type Operation = "add" | "subtract" | "multiply" | "divide";
+import type { Operation } from "../calculator/types";
 
 type UseCalculatorKeyboardParams = {
   onOperationChange: (operation: Operation) => void;

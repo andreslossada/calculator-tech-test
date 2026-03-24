@@ -1,8 +1,8 @@
 # Frontend (React + TypeScript)
 
-This folder contains the calculator UI built with React, TypeScript, and Vite.
+This folder contains the React UI (Vite + TypeScript).
 
-## Commands
+Use these commands:
 
 ```bash
 npm install
@@ -12,8 +12,4 @@ npm run test:coverage
 npm run build
 ```
 
-Default dev server URL: `http://localhost:5173`
-
-Backend base URL is controlled by `.env` using `VITE_API_BASE_URL`.
-
-For full setup, API contract, and architecture decisions, see the root README.
+For setup, API contract, deployment, and design decisions, use the root documentation in [README.md](../README.md).
