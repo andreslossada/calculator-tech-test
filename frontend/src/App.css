@@ -406,9 +406,27 @@
 }
 
 .keyboard-help {
-  margin: 0.4rem 0 0;
-  font-size: 0.81rem;
+  margin: 0.3rem 0 0;
+  font-size: 0.76rem;
   color: var(--keyboard-help);
+}
+
+.keyboard-help-subtle {
+  opacity: 0.72;
+}
+
+.keyboard-help kbd {
+  display: inline-block;
+  margin: 0 0.08rem;
+  padding: 0.3rem 0.38rem;
+  border: 1px solid var(--operation-border);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--symbol-bg) 85%, transparent);
+  color: var(--keyboard-help);
+  font-family: "IBM Plex Mono", "Fira Code", monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.1;
 }
 
 .calculator-shell {

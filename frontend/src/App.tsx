@@ -483,6 +483,9 @@ function App() {
                                         Reset
                                     </button>
                                 </div>
+                                <p className="keyboard-help keyboard-help-subtle" aria-label="Keyboard shortcuts available">
+                                    Shortcuts: <kbd>0-9</kbd> <kbd>+ - * /</kbd> <kbd>Enter</kbd> calculate <kbd>Esc</kbd> reset.
+                                </p>
                             </form>
                         ) : (
                             <section className="calculator-shell" aria-label="Calculator keypad mode">
@@ -561,6 +564,10 @@ function App() {
                                         {isLoading ? 'Calculating...' : '='}
                                     </button>
                                 </div>
+
+                                <p className="keyboard-help keyboard-help-subtle" aria-label="Keyboard shortcuts available">
+                                    Shortcuts: <kbd>0-9</kbd> <kbd>+ - * /</kbd> <kbd>Enter</kbd> calculate <kbd>Esc</kbd> reset.
+                                </p>
                             </section>
                         )}
                     </div>

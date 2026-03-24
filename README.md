@@ -206,7 +206,53 @@ make test
 make coverage
 ```
 
-## 8. API Usage Examples
+## 8. Optional Docker Setup
+
+Docker is optional in this assignment, but this repository includes a complete container setup.
+
+### What is a Dockerfile (simple explanation)
+
+- A Dockerfile is a recipe to build an image.
+- An image is a packaged environment with your app and everything needed to run it.
+- A container is a running instance of that image.
+
+In this project:
+
+- `backend/Dockerfile`:
+  - Builds the Go binary in a builder stage.
+  - Copies only the final binary to a small runtime image.
+  - Exposes port `8080`.
+- `frontend/Dockerfile`:
+  - Builds the React app with Vite.
+  - Serves static files with Nginx.
+  - Exposes port `80` inside the container (mapped to `5173` on host).
+
+### Why use docker-compose here
+
+- `docker-compose.yml` starts frontend and backend together.
+- It defines ports and environment variables in one file.
+- One command is enough to run the full stack.
+
+### Run with Docker
+
+From repository root:
+
+```bash
+docker compose up --build
+```
+
+Then open:
+
+- Frontend: `http://localhost:5173`
+- Backend health: `http://localhost:8080/health`
+
+Stop containers:
+
+```bash
+docker compose down
+```
+
+## 9. API Usage Examples
 
 ### cURL examples
 
@@ -222,7 +268,7 @@ curl -X POST http://localhost:8080/api/v1/calculate \
   -d '{"operation":"divide","a":10,"b":0}'
 ```
 
-## 9. Quick Verification Checklist
+## 10. Quick Verification Checklist
 
 Run these checks before sharing the repository link:
 
@@ -253,7 +299,7 @@ npm run test:coverage
 - Validate division by zero returns a readable error.
 - Validate mobile-width layout at roughly 560px.
 
-## 10. Design Decisions and Assumptions
+## 11. Design Decisions and Assumptions
 
 - Single calculate endpoint (`POST /api/v1/calculate`) was chosen to keep frontend integration simple and make future operations easy to add.
 - Backend separates HTTP handling and math logic:
@@ -263,13 +309,13 @@ npm run test:coverage
 - Number type is `float64`/`number` for simplicity in assignment scope.
 - Optional operations (exponentiation, square root, percentage) intentionally deferred until required scope is complete.
 
-## 11. Trade-offs
+## 12. Trade-offs
 
 - Kept a single endpoint for clarity and lower integration complexity, instead of multiple operation-specific routes.
 - Focused test scope on business and handler behavior rather than full browser E2E automation.
 - Prioritized required operations and robust validation over optional advanced operations.
 
-## 12. AI Prompts Used
+## 13. AI Prompts Used
 
 Prompts used during implementation:
 
@@ -279,8 +325,8 @@ Prompts used during implementation:
 4. "Implement Go backend endpoint with clean validation, JSON error contract, and table-driven unit tests."
 5. "Generate README with setup, run instructions, API examples, and design rationale."
 
-## 13. Known Limitations
+## 14. Known Limitations
 
 - Floating-point arithmetic can produce precision artifacts for some decimal values.
 - Optional advanced operations were not included in MVP by design.
-- Docker setup intentionally deferred as optional after required scope.
+- Docker setup is provided for local full-stack execution but was kept intentionally simple for interview scope.
