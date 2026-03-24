@@ -11,6 +11,7 @@ backend/coverage.out
 .DS_Store
 Thumbs.db
 .vscode
+.agents/
 
 # Workspace root deps
 node_modules
