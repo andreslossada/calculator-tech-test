@@ -1,13 +1,25 @@
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Manrope:wght@400;500;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap");
 
 :root {
   font-family: "Manrope", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: #21162b;
+  --page-grad-1: rgba(254, 170, 94, 0.3);
+  --page-grad-2: rgba(255, 223, 126, 0.3);
+  --page-grad-3: rgba(232, 137, 80, 0.2);
+  --page-bg: #fff7ee;
   line-height: 1.4;
   font-weight: 400;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+:root[data-theme="dark"] {
+  color: #f4ecff;
+  --page-grad-1: rgba(111, 66, 163, 0.23);
+  --page-grad-2: rgba(40, 87, 171, 0.22);
+  --page-grad-3: rgba(179, 94, 59, 0.18);
+  --page-bg: #120f19;
 }
 
 * {
@@ -20,20 +32,21 @@ body {
   background:
     radial-gradient(
       circle at 10% 15%,
-      rgba(254, 170, 94, 0.3),
+      var(--page-grad-1),
       transparent 42%
     ),
     radial-gradient(
       circle at 90% 8%,
-      rgba(255, 223, 126, 0.3),
+      var(--page-grad-2),
       transparent 37%
     ),
     radial-gradient(
       circle at 82% 86%,
-      rgba(232, 137, 80, 0.2),
+      var(--page-grad-3),
       transparent 40%
     ),
-    #fff7ee;
+    var(--page-bg);
+  transition: background 0.32s ease, color 0.32s ease;
 }
 
 #root {

@@ -109,7 +109,7 @@ calculator-tech-test/
 ## Clone and install
 
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/andreslossada/calculator-tech-test.git
 cd calculator-tech-test
 npm install
 ```
@@ -121,6 +121,14 @@ This installs the root dev runner dependencies (single-command startup).
 ```bash
 cd frontend
 cp .env.example .env
+npm install
+```
+
+Windows PowerShell alternative:
+
+```powershell
+cd frontend
+Copy-Item .env.example .env
 npm install
 ```
 
@@ -181,19 +189,21 @@ npm run test:coverage
 
 ### Backend
 
-```bash
-cd backend
-make test
-make coverage
-```
-
-Alternative without Makefile:
+Use the direct Go commands below (cross-platform, including Windows):
 
 ```bash
 cd backend
 go test ./...
 go test ./... -coverprofile=coverage.out
 go tool cover -func=coverage.out
+```
+
+If you have `make` available, you can also run:
+
+```bash
+cd backend
+make test
+make coverage
 ```
 
 ## 8. API Usage Examples
@@ -212,7 +222,38 @@ curl -X POST http://localhost:8080/api/v1/calculate \
   -d '{"operation":"divide","a":10,"b":0}'
 ```
 
-## 9. Design Decisions and Assumptions
+## 9. Quick Verification Checklist
+
+Run these checks before sharing the repository link:
+
+1. Backend tests pass
+
+```bash
+cd backend
+go test ./...
+```
+
+2. Frontend tests pass
+
+```bash
+cd frontend
+npm test
+```
+
+3. Frontend coverage command works
+
+```bash
+cd frontend
+npm run test:coverage
+```
+
+4. Manual smoke test
+
+- Open the UI and validate add/subtract/multiply/divide end-to-end.
+- Validate division by zero returns a readable error.
+- Validate mobile-width layout at roughly 560px.
+
+## 10. Design Decisions and Assumptions
 
 - Single calculate endpoint (`POST /api/v1/calculate`) was chosen to keep frontend integration simple and make future operations easy to add.
 - Backend separates HTTP handling and math logic:
@@ -222,7 +263,13 @@ curl -X POST http://localhost:8080/api/v1/calculate \
 - Number type is `float64`/`number` for simplicity in assignment scope.
 - Optional operations (exponentiation, square root, percentage) intentionally deferred until required scope is complete.
 
-## 10. AI Prompts Used
+## 11. Trade-offs
+
+- Kept a single endpoint for clarity and lower integration complexity, instead of multiple operation-specific routes.
+- Focused test scope on business and handler behavior rather than full browser E2E automation.
+- Prioritized required operations and robust validation over optional advanced operations.
+
+## 12. AI Prompts Used
 
 Prompts used during implementation:
 
@@ -232,7 +279,7 @@ Prompts used during implementation:
 4. "Implement Go backend endpoint with clean validation, JSON error contract, and table-driven unit tests."
 5. "Generate README with setup, run instructions, API examples, and design rationale."
 
-## 11. Known Limitations
+## 13. Known Limitations
 
 - Floating-point arithmetic can produce precision artifacts for some decimal values.
 - Optional advanced operations were not included in MVP by design.

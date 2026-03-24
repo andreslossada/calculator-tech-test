@@ -9,6 +9,8 @@ type UseCalculatorKeyboardParams = {
   onDigitInput?: (digit: string) => void;
   onDecimalInput?: () => void;
   onBackspaceInput?: () => void;
+  onFocusNextField?: () => void;
+  onFocusPreviousField?: () => void;
   isDisabled?: boolean;
 };
 
@@ -40,6 +42,8 @@ export const useCalculatorKeyboard = ({
   onDigitInput,
   onDecimalInput,
   onBackspaceInput,
+  onFocusNextField,
+  onFocusPreviousField,
   isDisabled = false,
 }: UseCalculatorKeyboardParams) => {
   useEffect(() => {
@@ -49,6 +53,17 @@ export const useCalculatorKeyboard = ({
       }
 
       const isEditable = isEditableElement(event.target);
+
+      if (!isEditable && event.key === "Tab") {
+        event.preventDefault();
+
+        if (event.shiftKey) {
+          onFocusPreviousField?.();
+        } else {
+          onFocusNextField?.();
+        }
+        return;
+      }
 
       if (!isEditable && /^\d$/.test(event.key)) {
         event.preventDefault();
@@ -94,5 +109,15 @@ export const useCalculatorKeyboard = ({
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isDisabled, onBackspaceInput, onCalculate, onDecimalInput, onDigitInput, onOperationChange, onReset]);
+  }, [
+    isDisabled,
+    onBackspaceInput,
+    onCalculate,
+    onDecimalInput,
+    onDigitInput,
+    onFocusNextField,
+    onFocusPreviousField,
+    onOperationChange,
+    onReset,
+  ]);
 };
