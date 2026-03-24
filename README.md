@@ -68,6 +68,49 @@ go test ./... -coverprofile=coverage.out
 go tool cover -func=coverage.out
 ```
 
+## How To Evaluate In 5 Minutes
+
+1. Start both services from the repository root:
+
+```bash
+npm run dev
+```
+
+Expected:
+
+- Frontend available at `http://localhost:5173`
+- Backend available at `http://localhost:8080`
+- Health endpoint returns `{"status":"ok"}`
+
+2. Validate core API behavior:
+
+```bash
+curl -X POST http://localhost:8080/api/v1/calculate \
+  -H "Content-Type: application/json" \
+  -d '{"operation":"add","a":10,"b":5}'
+
+curl -X POST http://localhost:8080/api/v1/calculate \
+  -H "Content-Type: application/json" \
+  -d '{"operation":"divide","a":10,"b":0}'
+```
+
+Expected:
+
+- First request returns `{"result":15}`
+- Second request returns `400` with error code `DIVISION_BY_ZERO`
+
+3. Run tests:
+
+```bash
+cd backend && go test ./...
+cd ../frontend && npm test
+```
+
+Expected:
+
+- Backend tests pass (service + handler)
+- Frontend tests pass (validation, API success/error, keyboard and mode flows)
+
 ## API
 
 Endpoint:

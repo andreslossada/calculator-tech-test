@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"math"
 	"net/http"
+	"strings"
 
 	"github.com/andres/calculator-tech-test/backend/internal/calculator"
 )
@@ -45,7 +47,13 @@ func calculateHandler(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
 	if err := decoder.Decode(&payload); err != nil {
-		writeError(w, http.StatusBadRequest, "INVALID_PAYLOAD", "Request body must be valid JSON.")
+		writeDecodeError(w, err)
+		return
+	}
+
+	var trailing json.RawMessage
+	if err := decoder.Decode(&trailing); err != io.EOF {
+		writeError(w, http.StatusBadRequest, "INVALID_PAYLOAD", "Request body must contain a single JSON object.")
 		return
 	}
 
@@ -67,6 +75,24 @@ func calculateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	writeJSON(w, http.StatusOK, calculateResponse{Result: result})
+}
+
+func writeDecodeError(w http.ResponseWriter, err error) {
+	var syntaxErr *json.SyntaxError
+	var typeErr *json.UnmarshalTypeError
+
+	switch {
+	case errors.Is(err, io.EOF):
+		writeError(w, http.StatusBadRequest, "INVALID_PAYLOAD", "Request body must not be empty.")
+	case errors.As(err, &syntaxErr):
+		writeError(w, http.StatusBadRequest, "INVALID_PAYLOAD", "Request body must be valid JSON.")
+	case errors.As(err, &typeErr):
+		writeError(w, http.StatusBadRequest, "INVALID_INPUT", "Inputs must be valid numeric values.")
+	case strings.Contains(err.Error(), "unknown field"):
+		writeError(w, http.StatusBadRequest, "INVALID_PAYLOAD", "Request body contains unknown fields.")
+	default:
+		writeError(w, http.StatusBadRequest, "INVALID_PAYLOAD", "Request body must be valid JSON.")
+	}
 }
 
 func validateRequest(payload calculateRequest) error {

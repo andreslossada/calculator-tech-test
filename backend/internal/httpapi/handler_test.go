@@ -119,6 +119,30 @@ func TestCalculateHandler_ValidationAndContractErrors(t *testing.T) {
 			wantStatus: http.StatusBadRequest,
 			wantCode:   "INVALID_PAYLOAD",
 		},
+		{
+			name:       "empty body",
+			body:       ``,
+			wantStatus: http.StatusBadRequest,
+			wantCode:   "INVALID_PAYLOAD",
+		},
+		{
+			name:       "malformed json",
+			body:       `{"operation":"add","a":7,`,
+			wantStatus: http.StatusBadRequest,
+			wantCode:   "INVALID_PAYLOAD",
+		},
+		{
+			name:       "invalid numeric types",
+			body:       `{"operation":"add","a":"abc","b":3}`,
+			wantStatus: http.StatusBadRequest,
+			wantCode:   "INVALID_INPUT",
+		},
+		{
+			name:       "multiple json objects",
+			body:       `{"operation":"add","a":7,"b":3}{"operation":"add","a":1,"b":2}`,
+			wantStatus: http.StatusBadRequest,
+			wantCode:   "INVALID_PAYLOAD",
+		},
 	}
 
 	for _, tt := range tests {

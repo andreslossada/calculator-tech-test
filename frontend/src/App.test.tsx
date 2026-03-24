@@ -56,6 +56,20 @@ describe('App', () => {
         })
     })
 
+    it('renders fallback error on network failure', async () => {
+        vi.spyOn(window, 'fetch').mockRejectedValue(new Error('Network down'))
+
+        render(<App />)
+
+        await userEvent.type(screen.getByLabelText('First number'), '4')
+        await userEvent.type(screen.getByLabelText('Second number'), '2')
+        await userEvent.click(screen.getByRole('button', { name: 'Calculate' }))
+
+        await waitFor(() => {
+            expect(screen.getByRole('alert')).toHaveTextContent('Network down')
+        })
+    })
+
     it('supports switching operation and calculating with keyboard shortcuts', async () => {
         const fetchSpy = vi.spyOn(window, 'fetch').mockResolvedValue({
             ok: true,
